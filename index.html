@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glacier | Premium Footwear</title>
+    <link rel="icon" type="image/x-icon" href="http://static.photos/minimal/1200x630/45">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.18);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .cart-sidebar {
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .cart-open .cart-sidebar {
+            transform: translateX(0);
+        }
+
+        .checkout-step {
+            display: none;
+        }
+
+        .checkout-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .product-card:hover .product-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .vanta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="vanta-bg" id="vanta-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 py-4 px-6 glass flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold tracking-wider">GLACIER</h1>
+        </div>
+        <div class="hidden md:flex space-x-8">
+            <a href="#featured" class="hover:text-gray-300 transition">Collections</a>
+            <a href="#new-arrivals" class="hover:text-gray-300 transition">New Arrivals</a>
+            <a href="#brand" class="hover:text-gray-300 transition">Philosophy</a>
+            <a href="#lookbook" class="hover:text-gray-300 transition">Lookbook</a>
+        </div>
+        <div class="flex items-center space-x-6">
+            <a href="#"><i data-feather="search"></i></a>
+            <a href="#" id="cart-icon" class="relative">
+                <i data-feather="shopping-bag"></i>
+                <span class="absolute -top-2 -right-2 bg-white text-black rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">0</span>
+            </a>
+            <a href="#"><i data-feather="user"></i></a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="h-screen flex items-center relative">
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.wallpaperscraft.com/image/single/sneakers_feet_rain_130448_1920x1080.jpg?auto=format&fit=crop&w=1500&q=80'); z-index:0;"></div>
+        <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10" data-aos="fade-up" data-aos-duration="1000">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6">KU XARAGO GLACIER</h1>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">A DEMO PROJECT BY DR MO</p>
+            <button class="glass py-4 px-8 text-lg font-medium rounded-lg hover:bg-white hover:text-black transition duration-300">Explore Collection</button>
+        </div>
+    </section>
+
+    <!-- Featured Collections -->
+    <section id="featured" class="py-20 px-6" data-aos="fade-up">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold">Curated Collections</h2>
+                <a href="#" class="flex items-center text-gray-300 hover:text-white">
+                    <span>View All</span>
+                    <i data-feather="chevron-right" class="ml-2"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Collection Cards -->
+                <div class="glass p-8 rounded-xl">
+                    <div class="h-64 bg-cover bg-center rounded-xl mb-6" style="background-image: url('https://tse2.mm.bing.net/th/id/OIP.6FxnAM0WWdl-oUSt-mGa0AHaHa?pid=ImgDet&w=191&h=191&c=7&o=7&rm=3');"></div>
+                    <h3 class="text-xl font-semibold mb-2">Arctic Collection</h3>
+                    <p class="text-gray-300 mb-4">Winter-ready designs with thermal insulation</p>
+                    <button class="glass px-6 py-2 hover:bg-white hover:text-black transition">Explore</button>
+                </div>
+
+                <div class="glass p-8 rounded-xl">
+                    <div class="h-64 bg-cover bg-center rounded-xl mb-6" style="background-image: url('https://i.ytimg.com/vi/q_eUH_xa1dc/maxresdefault.jpg');"></div>
+                    <h3 class="text-xl font-semibold mb-2">Urban Explorer</h3>
+                    <p class="text-gray-300 mb-4">Versatile designs for city landscapes</p>
+                    <button class="glass px-6 py-2 hover:bg-white hover:text-black transition">Explore</button>
+                </div>
+
+                <div class="glass p-8 rounded-xl">
+                    <div class="h-64 bg-cover bg-center rounded-xl mb-6" style="background-image: url('https://www.vivobarefoot.com/media/wysiwyg/Article_Evergreen_Zero_Drop_Image_3_M_343_x_211_1.jpg');"></div>
+                    <h3 class="text-xl font-semibold mb-2">Formal Elegance</h3>
+                    <p class="text-gray-300 mb-4">Sophisticated designs for formal occasions</p>
+                    <button class="glass px-6 py-2 hover:bg-white hover:text-black transition">Explore</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Arrivals -->
+    <section id="new-arrivals" class="py-20 bg-black bg-opacity-50">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12 text-center">New Arrivals</h2>
+            
+            <div class="relative h-32">
+                <div class="absolute left-0 top-0 border-l-2 border-white h-full" data-aos="grow-vertical" data-aos-duration="1500"></div>
+                
+                <!-- Timeline Elements -->
+                <div class="absolute left-0 top-0 transform -translate-x-1/2" style="left: 20%;">
+                    <div class="h-8 w-8 rounded-full bg-white" data-aos="zoom-in" data-aos-delay="300"></div>
+                    <div class="mt-10" data-aos="fade-up" data-aos-delay="500">
+                        <h3 class="text-lg font-semibold">Frost Runner</h3>
+                        <p class="text-gray-300 text-sm">Limited Edition</p>
+                    </div>
+                </div>
+                
+                <div class="absolute left-0 top-0 transform -translate-x-1/2" style="left: 50%;">
+                    <div class="h-8 w-8 rounded-full bg-white" data-aos="zoom-in" data-aos-delay="600"></div>
+                    <div class="mt-10" data-aos="fade-up" data-aos-delay="800">
+                        <h3 class="text-lg font-semibold">Ice Climber</h3>
+                        <p class="text-gray-300 text-sm">Hiking Series</p>
+                    </div>
+                </div>
+                
+                <div class="absolute left-0 top-0 transform -translate-x-1/2" style="left: 80%;">
+                    <div class="h-8 w-8 rounded-full bg-white" data-aos="zoom-in" data-aos-delay="900"></div>
+                    <div class="mt-10" data-aos="fade-up" data-aos-delay="1100">
+                        <h3 class="text-lg font-semibold">Crystal Edge</h3>
+                        <p class="text-gray-300 text-sm">Formal Series</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section class="py-20">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12">Signature Collection</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product Card 1 -->
+                <div class="glass overflow-hidden rounded-xl relative product-card" data-aos="fade-up">
+                    <div class="h-96 bg-cover bg-center" style="background-image: url('https://tse4.mm.bing.net/th/id/OIP.m128agTnRL0rd5-bI2rvEgHaHa?w=800&h=800&rs=1&pid=ImgDetMain&o=7&rm=3/1200x630/11');"></div>
+                    <div class="product-overlay absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-end p-6 opacity-0 transform translate-y-10 transition duration-500">
+                        <h3 class="text-xl font-semibold">Nordic Explorer</h3>
+                        <p class="text-gray-300 my-2">Premium hiking boot with weatherproof finish</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-lg font-medium">$289</span>
+                            <button class="glass px-5 py-2 hover:bg-white hover:text-black transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product Card 2 -->
+                <div class="glass overflow-hidden rounded-xl relative product-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-96 bg-cover bg-center" style="background-image: url('https://www.holabirdsports.com/cdn/shop/files/041971_5.jpg?v=1725980747&width=2048/1200x630/32');"></div>
+                    <div class="product-overlay absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-end p-6 opacity-0 transform translate-y-10 transition duration-500">
+                        <h3 class="text-xl font-semibold">Urban Drifter</h3>
+                        <p class="text-gray-300 my-2">Sleek city sneaker with premium leather</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-lg font-medium">$249</span>
+                            <button class="glass px-5 py-2 hover:bg-white hover:text-black transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product Card 3 -->
+                <div class="glass overflow-hidden rounded-xl relative product-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-96 bg-cover bg-center" style="background-image: url('https://cdna.lystit.com/1200/630/tr/photos/miinto/0d172935/on-shoes-White-Sneakers.jpeg');"></div>
+                    <div class="product-overlay absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-end p-6 opacity-0 transform translate-y-10 transition duration-500">
+                        <h3 class="text-xl font-semibold">Velvet Noir</h3>
+                        <p class="text-gray-300 my-2">Elegant evening shoe with velvet finish</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-lg font-medium">$349</span>
+                            <button class="glass px-5 py-2 hover:bg-white hover:text-black transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Story -->
+    <section id="brand" class="py-32 parallax" style="background-image: url('http://static.photos/minimal/1200x630/78')">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="glass p-10 rounded-xl" data-aos="fade-in">
+                <h2 class="text-3xl font-bold mb-6">Crafted by Elements</h2>
+                <p class="text-xl mb-8">At Glacier, we believe footwear should embody strength and grace—much like the natural phenomena that inspire our designs.</p>
+                <p class="mb-8">Each piece undergoes a meticulous 200-step process, merging cutting-edge technology with artisanal craftsmanship. Our sustainable materials are ethically sourced from renewable ecosystems, reinforcing our commitment to preserving the environments that shape our aesthetic.</p>
+                <button class="border-2 border-white py-3 px-8 text-lg hover:bg-white hover:text-black transition">Discover Our Process</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lookbook -->
+    <section id="lookbook" class="py-20">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12">Sculpted Elements</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass rounded-xl overflow-hidden" data-aos="flip-left">
+                    <img src="https://tse4.mm.bing.net/th/id/OIP.MF29csPaZEo1jHUleXiG-wHaE7?rs=1&pid=ImgDetMain&o=7&rm=3/640x360/22" alt="Shoes" class="w-full h-full object-cover">
+                </div>
+                <div class="glass rounded-xl overflow-hidden" data-aos="flip-left" data-aos-delay="100">
+                    <img src="https://tse4.mm.bing.net/th/id/OIP.jwTMxU2ZHpERu9-iqodWxgHaE7?pid=ImgDet&w=474&h=315&rs=1&o=7&rm=3/640x360/43" alt="Shoes" class="w-full h-full object-cover">
+                </div>
+                <div class="glass rounded-xl overflow-hidden row-span-2" data-aos="flip-left" data-aos-delay="200">
+                    <img src="https://tse1.mm.bing.net/th/id/OIP.E2NJjShUXag2Nuxc2Pu15AHaFj?rs=1&pid=ImgDetMain&o=7&rm=3/640x360/65" alt="Shoes" class="w-full h-full object-cover">
+                </div>
+                <div class="glass rounded-xl overflow-hidden" data-aos="flip-left" data-aos-delay="300">
+                    <img src="https://tse4.mm.bing.net/th/id/OIP.mK4p7yyIlKIIwbojDJDE0QHaE6?w=626&h=416&rs=1&pid=ImgDetMain&o=7&rm=3/640x360/88" alt="Shoes" class="w-full h-full object-cover">
+                </div>
+                <div class="glass rounded-xl overflow-hidden" data-aos="flip-left" data-aos-delay="400">
+                    <img src="https://tse4.mm.bing.net/th/id/OIP.MF29csPaZEo1jHUleXiG-wHaE7?rs=1&pid=ImgDetMain&o=7&rm=3/640x360/99" alt="Shoes" class="w-full h-full object-cover">
+                </div>
+                <div class="glass rounded-xl overflow-hidden" data-aos="flip-left" data-aos-delay="400">
+                    <img src="https://media.istockphoto.com/id/695474472/photo/overhead-shot-of-white-sneakers-on-pink-background.jpg?s=612x612&w=0&k=20&c=GzsXYIfYMrZ2ZHXvM_rImCnBJkjZhgTJOxdMPLOJ22s=" alt="Shoes" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shopping Cart Sidebar -->
+    <div class="cart-sidebar fixed top-0 right-0 h-full w-full md:w-96 bg-black bg-opacity-90 z-50 p-6 overflow-y-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-2xl font-bold">Your Selection</h3>
+            <button id="close-cart" class="text-3xl">&times;</button>
+        </div>
+        
+        <div class="space-y-6">
+            <!-- Cart Item -->
+            <div class="glass p-4 rounded-xl flex">
+                <div class="h-24 w-24 bg-cover bg-center rounded-lg" style="background-image: url('http://static.photos/minimal/320x240/11');"></div>
+                <div class="ml-4 flex-1">
+                    <div class="flex justify-between">
+                        <h4 class="font-medium">Nordic Explorer</h4>
+                        <button class="text-red-400"><i data-feather="trash-2"></i></button>
+                    </div>
+                    <p class="text-sm text-gray-300">Men's Hiking Series</p>
+                    <div class="flex justify-between items-center mt-2">
+                        <div class="flex items-center border border-white rounded-full">
+                            <button class="px-3 py-1">−</button>
+                            <span class="px-3">1</span>
+                            <button class="px-3 py-1">+</button>
+                        </div>
+                        <span class="font-medium">$289.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-12 pt-6 border-t border-gray-700">
+            <div class="flex justify-between mb-4">
+                <span class="text-gray-300">Subtotal</span>
+                <span class="font-medium">$289.00</span>
+            </div>
+            <button class="w-full bg-white text-black py-4 font-medium rounded-xl hover:bg-gray-100 transition">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4" id="checkout-modal" style="display: none;">
+        <div class="glass max-w-2xl w-full p-8 rounded-xl">
+            <!-- Progress Bar -->
+            <div class="flex justify-between relative mb-8">
+                <div class="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-700 -translate-y-1/2" style="margin: 0 40px;"></div>
+                <div class="step-circle active">
+                    <span>1</span>
+                    <span class="step-label">Shipping</span>
+                </div>
+                <div class="step-circle">
+                    <span>2</span>
+                    <span class="step-label">Payment</span>
+                </div>
+                <div class="step-circle">
+                    <span>3</span>
+                    <span class="step-label">Confirm</span>
+                </div>
+            </div>
+            
+            <!-- Step 1: Shipping Information -->
+            <div class="checkout-step active" id="step1">
+                <h3 class="text-2xl font-bold mb-6">Shipping Information</h3>
+                <form class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" placeholder="First Name" class="glass p-4 rounded-xl w-full">
+                        <input type="text" placeholder="Last Name" class="glass p-4 rounded-xl w-full">
+                    </div>
+                    <input type="text" placeholder="Address" class="glass p-4 rounded-xl w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" placeholder="City" class="glass p-4 rounded-xl w-full">
+                        <input type="text" placeholder="State" class="glass p-4 rounded-xl w-full">
+                        <input type="text" placeholder="ZIP Code" class="glass p-4 rounded-xl w-full">
+                    </div>
+                    <div class="flex justify-end mt-8">
+                        <button type="button" class="glass px-6 py-3 rounded-xl hover:bg-white hover:text-black transition next-step">Continue to Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 mt-20 glass">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h2 class="text-xl font-bold mb-4">GLACIER</h2>
+                <p class="text-gray-300">Redefining luxury footwear through innovative design and sustainable practices.</p>
+            </div>
+            
+            <div>
+                <h3 class="font-medium mb-4">Explore</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition">Collections</a></li>
+                    <li><a href="#" class="hover:text-white transition">New Arrivals</a></li>
+                    <li><a href="#" class="hover:text-white transition">Limited Editions</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-medium mb-4">Information</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition">Our Craft</a></li>
+                    <li><a href="#" class="hover:text-white transition">Sustainability</a></li>
+                    <li><a href="#" class="hover:text-white transition">Stores</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-medium mb-4">Subscribe</h3>
+                <form class="flex">
+                    <input type="email" placeholder="Your email" class="glass px-4 py-2 rounded-l-xl w-full">
+                    <button class="glass px-4 py-2 rounded-r-xl hover:bg-white hover:text-black transition"><i data-feather="arrow-right"></i></button>
+                </form>
+                <div class="flex space-x-4 mt-4">
+                    <a href="#"><i data-feather="instagram"></i></a>
+                    <a href="#"><i data-feather="facebook"></i></a>
+                    <a href="#"><i data-feather="twitter"></i></a>
+                    <a href="#"><i data-feather="youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize components
+        feather.replace();
+        AOS.init();
+        
+        // Vanta.js background
+        VANTA.GLOBE({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0xffffff,
+            size: 0.8,
+            backgroundColor: 0x0a0a0a
+        });
+        
+        // Cart toggle
+        const cartIcon = document.getElementById('cart-icon');
+        const closeCart = document.getElementById('close-cart');
+        const body = document.body;
+        
+        cartIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            body.classList.add('cart-open');
+        });
+        
+        closeCart.addEventListener('click', () => {
+            body.classList.remove('cart-open');
+        });
+        
+        // Checkout navigation
+        const nextButtons = document.querySelectorAll('.next-step');
+        nextButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const currentStep = button.closest('.checkout-step');
+                const nextStepId = currentStep.id.replace('step', 'step') + (parseInt(currentStep.id.slice(-1)) + 1);
+                const nextStep = document.getElementById(nextStepId);
+                
+                if(nextStep) {
+                    currentStep.classList.remove('active');
+                    nextStep.classList.add('active');
+                    
+                    // Update progress UI
+                    const stepIndex = parseInt(currentStep.id.slice(-1));
+                    document.querySelector(`.step-circle:nth-child(${stepIndex})`).classList.remove('active');
+                    document.querySelector(`.step-circle:nth-child(${stepIndex + 1})`).classList.add('active');
+                }
+            });
+        });
+        
+        // Product hover animations
+        const productCards = document.querySelectorAll('.product-card');
+        productCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const overlay = card.querySelector('.product-overlay');
+                overlay.style.opacity = 1;
+                overlay.style.transform = 'translateY(0)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                const overlay = card.querySelector('.product-overlay');
+                overlay.style.opacity = 0;
+                overlay.style.transform = 'translateY(10px)';
+            });
+        });
+    </script>
+</body>
+</html>
