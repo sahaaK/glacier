@@ -1,204 +1,293 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SYLEAD Unemployment & Immigration Survey - Analysis Dashboard</title>
     <link rel="icon" href="https://sylead-surveys.netlify.app/logo.png">
+
     <!-- TailwindCSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: '#f5f3ff',
+                100: '#ede9fe',
+                200: '#ddd6fe',
+                300: '#c4b5fd',
+                400: '#a78bfa',
+                500: '#8b5cf6',
+                600: '#7c3aed',
+                700: '#6d28d9',
+                800: '#5b21b6',
+                900: '#4c1d95'
+              },
+              secondary: {
+                50: '#ecfeff',
+                100: '#cffafe',
+                200: '#a5f3fc',
+                300: '#67e8f9',
+                400: '#22d3ee',
+                500: '#06b6d4',
+                600: '#0891b2',
+                700: '#0e7490',
+                800: '#155e75',
+                900: '#164e63'
+              }
+            },
+            fontFamily: {
+              inter: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'Apple Color Emoji', 'Segoe UI Emoji']
+            },
+            boxShadow: {
+              glass: '0 10px 30px rgba(0,0,0,0.35)',
+              neon: '0 0 0 1px rgba(139,92,246,.35), 0 0 18px rgba(139,92,246,.25), inset 0 0 24px rgba(139,92,246,.08)'
+            },
+            backdropBlur: {
+              xs: '2px'
+            }
+          }
+        }
+      }
+    </script>
+
     <!-- AOS (Animate On Scroll) -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
     <!-- Firebase (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <!-- Custom Styles -->
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-:root {
-    --bg-white: #ffffff;
-    --text-dark: #0f172a;
-    --muted: #64748b;
-    --border: rgba(15, 23, 42, 0.08);
-    --shadow: 0 8px 30px rgba(2, 6, 23, 0.08);
-    --glass: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(15, 23, 42, 0.08);
-}
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-* { box-sizing: border-box; }
+      :root {
+        --bg-start: #0b0b1d;
+        --bg-end: #1a1033;
+        --glass: rgba(17, 25, 40, 0.6);
+        --glass-strong: rgba(17, 25, 40, 0.72);
+        --glass-border: rgba(139, 92, 246, 0.25);
+        --glass-highlight: rgba(255, 255, 255, 0.08);
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --accent: #8b5cf6;
+        --accent-2: #22d3ee;
+      }
 
-html, body {
-    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    background: var(--bg-white);
-    color: var(--text-dark);
-}
+      * { box-sizing: border-box; }
 
-.container {
-    max-width: 1280px;
-}
+      html, body {
+        font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        background: radial-gradient(1200px 600px at 10% -10%, rgba(139,92,246,0.25), transparent 60%),
+                    radial-gradient(1000px 500px at 110% 10%, rgba(34,211,238,0.18), transparent 60%),
+                    linear-gradient(160deg, var(--bg-start), var(--bg-end));
+        color: var(--text);
+        min-height: 100%;
+      }
 
-/* Glassmorphism cards */
-.glassmorphism {
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: var(--shadow);
-    border-radius: 16px;
-}
+      .container {
+        max-width: 1400px;
+      }
 
-/* Metric cards */
-.metric-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 18px;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.8);
-    border: 1px solid rgba(15,23,42,0.06);
-    box-shadow: 0 10px 30px rgba(2,6,23,0.06);
-    transition: transform .2s ease, box-shadow .2s ease;
-}
-.metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 40px rgba(2,6,23,0.10);
-}
-.metric-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.metric-content { line-height: 1.2; }
-.metric-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-.metric-value { font-size: 24px; font-weight: 800; }
+      /* Subtle animated gradient sweep */
+      .bg-sweep {
+        position: fixed;
+        inset: -200% -200% -200% -200%;
+        background: conic-gradient(from 180deg at 50% 50%,
+          rgba(139,92,246,0.0),
+          rgba(139,92,246,0.12),
+          rgba(34,211,238,0.0),
+          rgba(34,211,238,0.12),
+          rgba(139,92,246,0.0));
+        animation: rotate 30s linear infinite;
+        pointer-events: none;
+        z-index: -2;
+      }
+      @keyframes rotate {
+        to { transform: rotate(360deg); }
+      }
 
-/* Chart cards */
-.chart-card {
-    background: rgba(255,255,255,0.85);
-    border: 1px solid rgba(15,23,42,0.06);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 12px 34px rgba(2,6,23,0.08);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-.chart-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 44px rgba(2,6,23,0.12);
-}
-.chart-header {
-    padding: 16px 18px 0 18px;
-}
-.chart-title {
-    font-weight: 800;
-    font-size: 16px;
-    line-height: 1.2;
-}
-.chart-subtitle {
-    color: var(--muted);
-    font-size: 12px;
-}
-.chart-body {
-    padding: 8px 14px 14px 14px;
-}
+      /* Glassmorphism card */
+      .glass {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(16px) saturate(120%);
+        -webkit-backdrop-filter: blur(16px) saturate(120%);
+        box-shadow: var(--shadow, 0 10px 30px rgba(0,0,0,0.35));
+        border-radius: 18px;
+        position: relative;
+        overflow: hidden;
+      }
 
-/* Buttons */
-.btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-weight: 700;
-    letter-spacing: .02em;
-    cursor: pointer;
-    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
-    box-shadow: 0 10px 24px rgba(99,102,241,0.35);
-}
-.btn-primary:hover {
-    transform: translateY(-1px);
-    filter: brightness(1.05);
-    box-shadow: 0 12px 30px rgba(99,102,241,0.45);
-}
-.btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    background: rgba(15,23,42,0.06);
-    color: #111827;
-    border: 1px solid rgba(15,23,42,0.08);
-    border-radius: 12px;
-    font-weight: 700;
-    letter-spacing: .02em;
-    cursor: pointer;
-    transition: background .2s ease, transform .2s ease;
-}
-.btn-secondary:hover {
-    background: rgba(15,23,42,0.10);
-    transform: translateY(-1px);
-}
+      .glass::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(400px 180px at -10% -10%, var(--glass-highlight), transparent 60%),
+                    radial-gradient(300px 160px at 110% 10%, rgba(34,211,238,0.08), transparent 60%);
+        pointer-events: none;
+      }
 
-/* Floating animated bubbles (subtle, behind content) */
-.bubble {
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(2px);
-    opacity: 0.35;
-    animation: float 18s linear infinite;
-}
-.bubble-1 {
-    width: 120px; height: 120px; background: #a78bfa; top: 10%; left: 5%;
-    animation-duration: 22s;
-}
-.bubble-2 {
-    width: 160px; height: 160px; background: #60a5fa; top: 25%; right: 8%;
-    animation-duration: 26s;
-}
-.bubble-3 {
-    width: 90px; height: 90px; background: #34d399; bottom: 15%; left: 20%;
-    animation-duration: 20s;
-}
-.bubble-4 {
-    width: 140px; height: 140px; background: #f59e0b; bottom: 20%; right: 12%;
-    animation-duration: 24s;
-}
-.bubble-5 {
-    width: 110px; height: 110px; background: #f472b6; top: 50%; left: 50%;
-    animation-duration: 28s;
-}
-.bubble-6 {
-    width: 80px; height: 80px; background: #22d3ee; top: 60%; left: 35%;
-    animation-duration: 19s;
-}
+      /* Metric card */
+      .metric-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px;
+        border-radius: 16px;
+        background: var(--glass-strong);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(16px) saturate(140%);
+        -webkit-backdrop-filter: blur(16px) saturate(140%);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 0 1px rgba(139,92,246,0.1) inset;
+        transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      }
+      .metric-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(139,92,246,0.45);
+        box-shadow: 0 18px 40px rgba(0,0,0,0.45), 0 0 24px rgba(139,92,246,0.25);
+      }
+      .metric-icon {
+        width: 48px; height: 48px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(34,211,238,0.18));
+        border: 1px solid rgba(139,92,246,0.35);
+        box-shadow: inset 0 0 24px rgba(139,92,246,0.15), 0 0 18px rgba(34,211,238,0.15);
+      }
+      .metric-content { line-height: 1.2; }
+      .metric-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+      .metric-value { font-size: 26px; font-weight: 800; }
 
-@keyframes float {
-    0% { transform: translateY(0) translateX(0) scale(1); }
-    50% { transform: translateY(-30px) translateX(15px) scale(1.05); }
-    100% { transform: translateY(0) translateX(0) scale(1); }
-}
+      /* Chart card */
+      .chart-card {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(16px) saturate(120%);
+        -webkit-backdrop-filter: blur(16px) saturate(120%);
+        box-shadow: 0 12px 34px rgba(0,0,0,0.35);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        position: relative;
+      }
+      .chart-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(139,92,246,0.45);
+        box-shadow: 0 18px 48px rgba(0,0,0,0.5), 0 0 28px rgba(139,92,246,0.25);
+      }
+      .chart-header {
+        padding: 16px 18px 0 18px;
+      }
+      .chart-title {
+        font-weight: 800;
+        font-size: 16px;
+        line-height: 1.2;
+      }
+      .chart-subtitle {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .chart-body {
+        padding: 8px 14px 14px 14px;
+      }
 
-/* Responsive tweaks */
-@media (max-width: 640px) {
-    .metric-value { font-size: 20px; }
-}
-  </style>
+      /* Buttons */
+      .btn-primary {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 10px 14px;
+        background: linear-gradient(135deg, rgba(139,92,246,0.9), rgba(34,211,238,0.85));
+        color: #0b1020;
+        border: 1px solid rgba(139,92,246,0.55);
+        border-radius: 12px;
+        font-weight: 800;
+        letter-spacing: .02em;
+        cursor: pointer;
+        transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+        box-shadow: 0 10px 24px rgba(139,92,246,0.35), inset 0 -2px 0 rgba(255,255,255,0.15);
+        text-shadow: 0 1px 0 rgba(255,255,255,0.25);
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05) saturate(1.1);
+        box-shadow: 0 14px 34px rgba(139,92,246,0.45);
+      }
+      .btn-secondary {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 10px 14px;
+        background: rgba(17,25,40,0.6);
+        color: #d1d5db;
+        border: 1px solid rgba(139,92,246,0.35);
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: .02em;
+        cursor: pointer;
+        transition: background .2s ease, transform .2s ease, border-color .2s ease;
+        backdrop-filter: blur(8px);
+      }
+      .btn-secondary:hover {
+        background: rgba(17,25,40,0.8);
+        border-color: rgba(139,92,246,0.6);
+        transform: translateY(-1px);
+      }
+
+      /* Floating animated bubbles (subtle, behind content) */
+      .bubble {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(2px);
+        opacity: 0.35;
+        animation: float 18s linear infinite;
+        pointer-events: none;
+      }
+      .bubble-1 { width: 140px; height: 140px; background: #8b5cf6; top: 10%; left: 5%; animation-duration: 22s; }
+      .bubble-2 { width: 200px; height: 200px; background: #22d3ee; top: 25%; right: 8%; animation-duration: 26s; }
+      .bubble-3 { width: 110px; height: 110px; background: #34d399; bottom: 15%; left: 20%; animation-duration: 20s; }
+      .bubble-4 { width: 180px; height: 180px; background: #f59e0b; bottom: 20%; right: 12%; animation-duration: 24s; }
+      .bubble-5 { width: 130px; height: 130px; background: #f472b6; top: 50%; left: 50%; animation-duration: 28s; }
+      .bubble-6 { width: 90px; height: 90px; background: #60a5fa; top: 60%; left: 35%; animation-duration: 19s; }
+
+      @keyframes float {
+        0% { transform: translateY(0) translateX(0) scale(1); }
+        50% { transform: translateY(-30px) translateX(15px) scale(1.05); }
+        100% { transform: translateY(0) translateX(0) scale(1); }
+      }
+
+      /* Subtle glow border on hover for charts */
+      .glow-border {
+        position: relative;
+      }
+      .glow-border::before {
+        content: "";
+        position: absolute; inset: -1px;
+        border-radius: inherit;
+        background: linear-gradient(135deg, rgba(139,92,246,0.6), rgba(34,211,238,0.6));
+        opacity: 0; transition: opacity .25s ease;
+        z-index: -1;
+        filter: blur(10px);
+      }
+      .glow-border:hover::before { opacity: .65; }
+
+      /* Responsive tweaks */
+      @media (max-width: 640px) {
+        .metric-value { font-size: 22px; }
+      }
+    </style>
 </head>
-<body class="min-h-screen bg-white text-gray-900">
-    <!-- Floating Bubbles (Futuristic, Slick) -->
+<body class="min-h-screen text-gray-100 antialiased">
+    <!-- Animated background sweep -->
+    <div class="bg-sweep"></div>
+
+    <!-- Floating Bubbles (subtle, behind content) -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div class="bubble bubble-1"></div>
         <div class="bubble bubble-2"></div>
@@ -213,20 +302,20 @@ html, body {
         <div class="container mx-auto px-4">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                 <div class="flex items-center gap-4">
-                    <img src="https://sylead-surveys.netlify.app/logo.png" alt="SYLEAD" class="h-14 w-14 object-contain">
+                    <img src="https://sylead-surveys.netlify.app/logo.png" alt="SYLEAD" class="h-14 w-14 object-contain drop-shadow-[0_0_10px_rgba(139,92,246,0.6)]">
                     <div>
-                        <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight">
+                        <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary-300 via-primary-500 to-secondary-400">
                             Unemployment & Immigration Survey Analysis
                         </h1>
-                        <p class="text-gray-600">SYLEAD - Dashboard, Insights & Visual Analytics</p>
+                        <p class="text-gray-400">SYLEAD - Dashboard, Insights & Visual Analytics</p>
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                    <div id="dataSourceBadge" class="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200">
+                    <div id="dataSourceBadge" class="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-emerald-500/10 text-emerald-300 border border-emerald-400/30">
                         <i data-feather="database" class="w-4 h-4"></i>
                         <span class="text-sm font-medium" id="dataSourceText">Loading...</span>
                     </div>
-                    <div id="lastUpdated" class="text-sm text-gray-500">Last updated: —</div>
+                    <div id="lastUpdated" class="text-sm text-gray-400">Last updated: —</div>
                 </div>
             </div>
         </div>
@@ -234,7 +323,7 @@ html, body {
 
     <!-- Controls -->
     <section class="container mx-auto px-4 mb-6" data-aos="fade-up">
-        <div class="glassmorphism rounded-2xl p-4">
+        <div class="glass p-4">
             <div class="flex flex-wrap items-center gap-4">
                 <button id="refreshBtn" class="btn-primary">
                     <i data-feather="refresh-ccw" class="w-4 h-4"></i>
@@ -248,7 +337,7 @@ html, body {
                     <i data-feather="download-cloud" class="w-4 h-4"></i>
                     Export CSV
                 </button>
-                <div class="ml-auto text-sm text-gray-600">
+                <div class="ml-auto text-sm text-gray-300">
                     Total Responses: <span id="totalResponses" class="font-semibold">—</span>
                 </div>
             </div>
@@ -259,7 +348,7 @@ html, body {
     <section class="container mx-auto px-4 mb-8" data-aos="fade-up">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="metric-card">
-                <div class="metric-icon" style="background: rgba(59,130,246,.1); color:#3b82f6;">
+                <div class="metric-icon text-primary-300">
                     <i data-feather="users"></i>
                 </div>
                 <div class="metric-content">
@@ -269,7 +358,7 @@ html, body {
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon" style="background: rgba(16,185,129,.1); color:#10b981;">
+                <div class="metric-icon text-secondary-300">
                     <i data-feather="briefcase"></i>
                 </div>
                 <div class="metric-content">
@@ -279,7 +368,7 @@ html, body {
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon" style="background: rgba(244,63,94,.1); color:#f43f5e;">
+                <div class="metric-icon text-rose-400">
                     <i data-feather="trending-down"></i>
                 </div>
                 <div class="metric-content">
@@ -289,7 +378,7 @@ html, body {
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon" style="background: rgba(234,179,8,.1); color:#eab308;">
+                <div class="metric-icon text-amber-400">
                     <i data-feather="plane"></i>
                 </div>
                 <div class="metric-content">
@@ -305,7 +394,7 @@ html, body {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             <!-- Demographics: Gender -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Gender Distribution</h3>
                     <span class="chart-subtitle">Q1: Jinsiga</span>
@@ -316,7 +405,7 @@ html, body {
             </div>
 
             <!-- Demographics: Age -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Age Groups</h3>
                     <span class="chart-subtitle">Q2: Da'da</span>
@@ -327,7 +416,7 @@ html, body {
             </div>
 
             <!-- Demographics: Year in University -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Year of Study</h3>
                     <span class="chart-subtitle">Q3: Sanadka dhigashada jaamacadda</span>
@@ -338,7 +427,7 @@ html, body {
             </div>
 
             <!-- Demographics: Faculty -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Faculty Distribution</h3>
                     <span class="chart-subtitle">Q4: Faculty-ga dhigashada</span>
@@ -349,7 +438,7 @@ html, body {
             </div>
 
             <!-- Employment Status -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Employment Status</h3>
                     <span class="chart-subtitle">Q5: Ma shaqo ayaad haysaa hadda?</span>
@@ -360,7 +449,7 @@ html, body {
             </div>
 
             <!-- Job Search Duration -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Job Search Duration</h3>
                     <span class="chart-subtitle">Q6: Muddada raadinta shaqo</span>
@@ -371,7 +460,7 @@ html, body {
             </div>
 
             <!-- Unemployment Reasons (Radar) -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Unemployment Reasons (Radar)</h3>
                     <span class="chart-subtitle">Q7: Sababta ugu weyn ee shaqo la'aanta</span>
@@ -382,7 +471,7 @@ html, body {
             </div>
 
             <!-- Confidence in Finding a Job -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Confidence in Finding a Job</h3>
                     <span class="chart-subtitle">Q8: Kalsoonida helitaanka shaqo</span>
@@ -393,7 +482,7 @@ html, body {
             </div>
 
             <!-- Business Idea Due to Unemployment -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Considering Business due to Unemployment</h3>
                     <span class="chart-subtitle">Q9: Ka fikrinta ganacsi bilowdo</span>
@@ -404,7 +493,7 @@ html, body {
             </div>
 
             <!-- Emigration Consideration -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Emigration Consideration</h3>
                     <span class="chart-subtitle">Q10: Ka fikrinta inaad dalka ka baxdo</span>
@@ -415,7 +504,7 @@ html, body {
             </div>
 
             <!-- Emigration Reasons -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Top Emigration Reasons</h3>
                     <span class="chart-subtitle">Q11: Sababta ugu weyn ee tahriibka</span>
@@ -426,7 +515,7 @@ html, body {
             </div>
 
             <!-- Destination Countries -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Preferred Destinations</h3>
                     <span class="chart-subtitle">Q12: Meelaha aad jeclaan lahayd inaad tagto</span>
@@ -437,7 +526,7 @@ html, body {
             </div>
 
             <!-- Will You Return Home? -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Would You Return Home?</h3>
                     <span class="chart-subtitle">Q13: Ku soo laaban dalkaaga mustaqbalka?</span>
@@ -448,7 +537,7 @@ html, body {
             </div>
 
             <!-- Emigration Impact -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Perceived Impact of Emigration</h3>
                     <span class="chart-subtitle">Q14: Saameynta tahriibka dalka</span>
@@ -459,7 +548,7 @@ html, body {
             </div>
 
             <!-- University Support -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">University Support Adequacy</h3>
                     <span class="chart-subtitle">Q15: Jaamacadda taageero ku filan</span>
@@ -470,7 +559,7 @@ html, body {
             </div>
 
             <!-- University Actions -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Recommended University Actions</h3>
                     <span class="chart-subtitle">Q16: Talloo ay jaamacaduhu qaadan karaan</span>
@@ -481,7 +570,7 @@ html, body {
             </div>
 
             <!-- Government Policy Need -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Need for Government Policies</h3>
                     <span class="chart-subtitle">Q17: Baahida siyaasadda dowladda</span>
@@ -492,7 +581,7 @@ html, body {
             </div>
 
             <!-- SYLEAD Program Participation -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">SYLEAD Program Participation</h3>
                     <span class="chart-subtitle">Q18: Ka qayb gelinta barnaamijyada SYLEAD</span>
@@ -503,7 +592,7 @@ html, body {
             </div>
 
             <!-- Future Outlook -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Future Career Outlook</h3>
                     <span class="chart-subtitle">Q19: Mustaqbalka shaqada</span>
@@ -514,7 +603,7 @@ html, body {
             </div>
 
             <!-- Desire to Emigrate -->
-            <div class="chart-card" data-aos="zoom-in">
+            <div class="chart-card glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Desire to Emigrate</h3>
                     <span class="chart-subtitle">Q20: Rabitaanka tahriibto</span>
@@ -525,7 +614,7 @@ html, body {
             </div>
 
             <!-- Comments Word Cloud (Bar) -->
-            <div class="chart-card lg:col-span-2" data-aos="zoom-in">
+            <div class="chart-card lg:col-span-2 glow-border" data-aos="zoom-in">
                 <div class="chart-header">
                     <h3 class="chart-title">Comments Word Frequency</h3>
                     <span class="chart-subtitle">Q21: Taloyin iyo faallooyin (optional)</span>
@@ -539,9 +628,9 @@ html, body {
     </main>
 
     <!-- Footer -->
-    <footer class="py-8 border-t border-gray-200">
-        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
-            Built with TailwindCSS, Chart.js, and Firebase Firestore. Glassmorphism UI with animated bubbles.
+    <footer class="py-8 border-t border-white/10">
+        <div class="container mx-auto px-4 text-center text-gray-400 text-sm">
+           2025 @SYLEAD
         </div>
     </footer>
 
@@ -558,24 +647,23 @@ const firebaseConfig = {
     measurementId: "G-E9E04BWX5Y"
 };
 
-// Color palette for charts
+// Neon chart palette
 const palette = [
-    "#4F46E5", // indigo-600
-    "#06B6D4", // cyan-500
-    "#10B981", // emerald-500
-    "#F59E0B", // amber-500
-    "#EF4444", // red-500
-    "#8B5CF6", // violet-500
-    "#F43F5E", // rose-500
-    "#22C55E", // green-500
-    "#3B82F6", // blue-500
-    "#EAB308", // yellow-500
-    "#F97316", // orange-500
-    "#6366F1", // indigo-500
-    "#84CC16", // lime-500
-    "#A855F7", // purple-500
-    "#EC4899", // pink-500
-    "#14B8A6"  // teal-500
+    "#8b5cf6", // violet
+    "#22d3ee", // cyan
+    "#34d399", // emerald
+    "#f59e0b", // amber
+    "#ef4444", // red
+    "#f472b6", // pink
+    "#60a5fa", // blue
+    "#a78bfa", // purple light
+    "#10b981", // green
+    "#eab308", // yellow
+    "#f97316", // orange
+    "#6366f1", // indigo
+    "#84cc16", // lime
+    "#ec4899", // pink darker
+    "#14b8a6"  // teal
 ];
 
 let charts = {};
@@ -597,10 +685,10 @@ function setBadge(source) {
     const badge = qs("#dataSourceBadge");
     const txt = qs("#dataSourceText");
     if (source === "firebase") {
-        badge.className = "inline-flex items-center gap-2 rounded-full px-4 py-2 bg-green-50 text-green-700 border border-green-200";
+        badge.className = "inline-flex items-center gap-2 rounded-full px-4 py-2 bg-emerald-500/10 text-emerald-300 border border-emerald-400/30";
         txt.textContent = "Live Data (Firestore)";
     } else {
-        badge.className = "inline-flex items-center gap-2 rounded-full px-4 py-2 bg-amber-50 text-amber-700 border border-amber-200";
+        badge.className = "inline-flex items-center gap-2 rounded-full px-4 py-2 bg-amber-500/10 text-amber-300 border border-amber-400/30";
         txt.textContent = "Sample Data (Mock)";
     }
 }
@@ -626,7 +714,6 @@ async function fetchSurveyData() {
 
 /* Sample mock dataset for demo purposes */
 function sampleData() {
-    // 120 mock responses
     const genders = ["Lab", "Dhedig"];
     const ages = ["18-21", "22-25", "26-30"];
     const years = ["1st", "2nd", "3rd", "4th+"];
@@ -734,7 +821,29 @@ function makeChart(id, config) {
     destroyChart(id);
     const ctx = document.getElementById(id);
     if (!ctx) return;
-    charts[id] = new Chart(ctx, config);
+
+    // Dark theme defaults
+    const baseOptions = {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: { color: '#cbd5e1', usePointStyle: true, padding: 16 }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+          titleColor: '#e5e7eb',
+          bodyColor: '#e5e7eb',
+          borderColor: 'rgba(139, 92, 246, 0.45)',
+          borderWidth: 1
+        }
+      },
+      animation: {
+        duration: 900,
+        easing: 'easeOutQuart'
+      }
+    };
+    const mergedConfig = { ...config, options: { ...baseOptions, ...(config.options || {}) } };
+    charts[id] = new Chart(ctx, mergedConfig);
 }
 function pieConfig(id, labels, values, title) {
     return {
@@ -744,17 +853,12 @@ function pieConfig(id, labels, values, title) {
             datasets: [{
                 data: values,
                 backgroundColor: labels.map((_, i) => palette[i % palette.length]),
+                borderColor: "rgba(0,0,0,0.0)",
                 borderWidth: 2,
-                borderColor: "#fff"
+                hoverOffset: 6
             }]
         },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } },
-                title: { display: false, text: title }
-            }
-        }
+        options: {}
     };
 }
 function doughnutConfig(id, labels, values, title) {
@@ -765,17 +869,14 @@ function doughnutConfig(id, labels, values, title) {
             datasets: [{
                 data: values,
                 backgroundColor: labels.map((_, i) => palette[i % palette.length]),
+                borderColor: "rgba(0,0,0,0.0)",
                 borderWidth: 2,
-                borderColor: "#fff"
+                hoverOffset: 6
             }]
         },
         options: {
-            responsive: true,
-            cutout: "55%",
-            plugins: {
-                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } },
-                title: { display: false, text: title }
-            }
+            cutout: "58%",
+            plugins: { legend: { position: 'bottom' } }
         }
     };
 }
@@ -794,15 +895,11 @@ function barConfig(id, labels, values, title, horizontal = false) {
         },
         options: {
             indexAxis: horizontal ? 'y' : 'x',
-            responsive: true,
             scales: {
-                x: { grid: { display: false }, ticks: { color: "#475569" } },
-                y: { grid: { color: "rgba(15,23,42,0.06)" }, ticks: { color: "#475569" } }
+                x: { grid: { color: "rgba(148,163,184,0.12)" }, ticks: { color: "#cbd5e1" } },
+                y: { grid: { color: "rgba(148,163,184,0.12)" }, ticks: { color: "#cbd5e1" } }
             },
-            plugins: {
-                legend: { display: false },
-                title: { display: false, text: title }
-            }
+            plugins: { legend: { display: false } }
         }
     };
 }
@@ -815,7 +912,7 @@ function lineConfig(id, labels, values, title) {
                 label: 'Count',
                 data: values,
                 borderColor: palette[0],
-                backgroundColor: "rgba(79,70,229,0.15)",
+                backgroundColor: "rgba(139,92,246,0.15)",
                 tension: 0.35,
                 fill: true,
                 pointBackgroundColor: palette[0],
@@ -823,12 +920,11 @@ function lineConfig(id, labels, values, title) {
             }]
         },
         options: {
-            responsive: true,
             scales: {
-                x: { grid: { display: false }, ticks: { color: "#475569" } },
-                y: { grid: { color: "rgba(15,23,42,0.06)" }, ticks: { color: "#475569" } }
+                x: { grid: { color: "rgba(148,163,184,0.12)" }, ticks: { color: "#cbd5e1" } },
+                y: { grid: { color: "rgba(148,163,184,0.12)" }, ticks: { color: "#cbd5e1" } }
             },
-            plugins: { legend: { display: false }, title: { display: false, text: title } }
+            plugins: { legend: { display: false } }
         }
     };
 }
@@ -840,7 +936,7 @@ function radarConfig(id, labels, values, title) {
             datasets: [{
                 label: 'Responses',
                 data: values,
-                backgroundColor: "rgba(79,70,229,0.20)",
+                backgroundColor: "rgba(139,92,246,0.20)",
                 borderColor: palette[0],
                 pointBackgroundColor: palette[0],
                 pointBorderColor: "#fff",
@@ -849,16 +945,15 @@ function radarConfig(id, labels, values, title) {
             }]
         },
         options: {
-            responsive: true,
             scales: {
                 r: {
-                    angleLines: { color: "rgba(15,23,42,0.1)" },
-                    grid: { color: "rgba(15,23,42,0.1)" },
-                    pointLabels: { color: "#334155" },
+                    angleLines: { color: "rgba(148,163,184,0.2)" },
+                    grid: { color: "rgba(148,163,184,0.2)" },
+                    pointLabels: { color: "#cbd5e1" },
                     ticks: { display: false }
                 }
             },
-            plugins: { legend: { display: false }, title: { display: false, text: title } }
+            plugins: { legend: { display: false } }
         }
     };
 }
@@ -885,91 +980,69 @@ function renderAll(data) {
     qs("#metricEmigration").textContent = pct(emigrationYes, total);
 
     // Charts
-    // 1. Gender
     const gender = countBy(data, "gender");
     makeChart("genderChart", pieConfig("genderChart", gender.map(x => x[0]), gender.map(x => x[1])));
 
-    // 2. Age
     const age = countBy(data, "age");
     makeChart("ageChart", barConfig("ageChart", age.map(x => x[0]), age.map(x => x[1])));
 
-    // 3. Year
     const year = countBy(data, "year");
     makeChart("yearChart", barConfig("yearChart", year.map(x => x[0]), year.map(x => x[1])));
 
-    // 4. Faculty
     const faculty = countBy(data, "faculty");
     makeChart("facultyChart", doughnutConfig("facultyChart", faculty.map(x => x[0]), faculty.map(x => x[1])));
 
-    // 5. Employment
     const employment = countBy(data, "employment");
     makeChart("employmentChart", doughnutConfig("employmentChart", employment.map(x => x[0]), employment.map(x => x[1])));
 
-    // 6. Job search duration
     const jobSearch = countBy(data, "jobSearchDuration");
     makeChart("jobSearchChart", lineConfig("jobSearchChart", jobSearch.map(x => x[0]), jobSearch.map(x => x[1])));
 
-    // 7. Unemployment reasons radar
     const unempReason = countBy(data, "unemploymentReason");
     makeChart("unemploymentRadarChart", radarConfig("unemploymentRadarChart", unempReason.map(x => x[0]), unempReason.map(x => x[1])));
 
-    // 8. Confidence
     const confidence = countBy(data, "confidence");
     makeChart("confidenceChart", barConfig("confidenceChart", confidence.map(x => x[0]), confidence.map(x => x[1])));
 
-    // 9. Business Idea
     const businessIdea = countBy(data, "businessIdea");
     makeChart("businessIdeaChart", barConfig("businessIdeaChart", businessIdea.map(x => x[0]), businessIdea.map(x => x[1])));
 
-    // 10. Emigration
     const emigration = countBy(data, "emigration");
     makeChart("emigrationChart", pieConfig("emigrationChart", emigration.map(x => x[0]), emigration.map(x => x[1])));
 
-    // 11. Emigration reasons
     const emigrationReasons = countBy(data, "emigrationReason");
     makeChart("emigrationReasonsChart", barConfig("emigrationReasonsChart", emigrationReasons.map(x => x[0]), emigrationReasons.map(x => x[1])));
 
-    // 12. Destinations
     const destinations = countBy(data, "destination");
     makeChart("destinationChart", barConfig("destinationChart", destinations.map(x => x[0]), destinations.map(x => x[1])));
 
-    // 13. Return home
     const returnHome = countBy(data, "returnHome");
     makeChart("returnHomeChart", barConfig("returnHomeChart", returnHome.map(x => x[0]), returnHome.map(x => x[1])));
 
-    // 14. Emigration impact
     const emigrationImpact = countBy(data, "emigrationImpact");
     makeChart("emigrationImpactChart", doughnutConfig("emigrationImpactChart", emigrationImpact.map(x => x[0]), emigrationImpact.map(x => x[1])));
 
-    // 15. University support
     const universitySupport = countBy(data, "universitySupport");
     makeChart("universitySupportChart", barConfig("universitySupportChart", universitySupport.map(x => x[0]), universitySupport.map(x => x[1])));
 
-    // 16. University actions
     const universityActions = countBy(data, "universityAction");
     makeChart("universityActionsChart", barConfig("universityActionsChart", universityActions.map(x => x[0]), universityActions.map(x => x[1])));
 
-    // 17. Government policy
     const governmentPolicy = countBy(data, "governmentPolicy");
     makeChart("governmentPolicyChart", pieConfig("governmentPolicyChart", governmentPolicy.map(x => x[0]), governmentPolicy.map(x => x[1])));
 
-    // 18. SYLEAD program
     const syleadProgram = countBy(data, "syleadProgram");
     makeChart("syleadProgramChart", barConfig("syleadProgramChart", syleadProgram.map(x => x[0]), syleadProgram.map(x => x[1])));
 
-    // 19. Future outlook
     const futureOutlook = countBy(data, "futureOutlook");
     makeChart("futureOutlookChart", barConfig("futureOutlookChart", futureOutlook.map(x => x[0]), futureOutlook.map(x => x[1])));
 
-    // 20. Want to emigrate
     const wantToEmigrate = countBy(data, "wantToEmigrate");
     makeChart("wantToEmigrateChart", barConfig("wantToEmigrateChart", wantToEmigrate.map(x => x[0]), wantToEmigrate.map(x => x[1])));
 
-    // 21. Comments word frequency
     const words = wordFrequency(flattenComments(data));
     makeChart("commentsWordCloud", barConfig("commentsWordCloud", words.map(x => x[0]), words.map(x => x[1])));
 
-    // Timestamp
     qs("#lastUpdated").textContent = "Last updated: " + new Date().toLocaleString();
 }
 
@@ -991,7 +1064,6 @@ function exportCSV() {
     ];
     const rows = lastDataSnapshot.map(obj => headers.map(h => {
         const v = obj?.[h] ?? "";
-        // Escape CSV
         const s = String(v).replace(/"/g, '""');
         return `"${s}"`;
     }));
@@ -1028,6 +1100,5 @@ qs("#exportCsvBtn").addEventListener("click", exportCSV);
         // Initialize AOS
         AOS.init({ duration: 700, once: true });
     </script>
-<script src="https://huggingface.co/deepsite/deepsite-badge.js"></script>
 </body>
 </html>
